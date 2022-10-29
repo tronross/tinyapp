@@ -18,6 +18,10 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", tempVars);
 });
 
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
 app.get("/urls/:id", (req, res) => {
   const tempVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", tempVars);
