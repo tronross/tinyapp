@@ -27,6 +27,32 @@
     </div>
       <br>
       <p>
+        <h3 style="text-align:center">Edit</h3>
+
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+          
+          <div class="px-2">
+              <form action="/urls/<%= id %>"  class="justify-content-center">
+                  <div class="form-group">
+                      <label class="sr-only">Name</label>
+                      <input type="text" class="form-control" placeholder="http://">
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-primary">Edit</button>
+              </form>
+          </div>
+      <!-- <form class="form-inline" action="/urls/<%= id %>" method="POST">
+          <label for="New URL" class ="col-sm-2 col-form-label col-form-label-lg">New URL:</label>
+          <div class="col-sm-10 offset-sm-1 text-center">
+          <input
+            class="form-control"
+            type="text"
+            name="longURL"
+            placeholder="http://"
+            style="width: 300px; margin: 1em"
+          />
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form> -->
         Shorten an
         <a href='#''>URL</a>
       </p>
