@@ -34,7 +34,8 @@ app.get("/", (req, res) => {
 
 // redirect from short-URL id
 app.get("/u/:id", (req, res) => {
- const longURL = req.params.id;
+ const shortURL = req.params.id;
+ const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
 
