@@ -56,8 +56,7 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   delete urlDatabase[shortURL];
-  const tempVars = { urls: urlDatabase };
-  res.render("urls_index", tempVars);
+  res.redirect("/urls");
 });
 
 // render form page to generate new short_URL id and long-URL pair
