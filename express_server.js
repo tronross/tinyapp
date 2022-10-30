@@ -9,13 +9,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const genRanStr = generateRandomString = function() {
+
+const genRanStr = function() {
   const charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charSetLength = charSet.length;
   let randString = '';
   
   for (let i = 0; i < 6; i++) {
-    const randIndex = Math.round(Math.random() * charSetLength);
+    const randIndex = Math.floor(Math.random() * charSetLength);
     const randChar = charSet.charAt(randIndex);
     randString += randChar;
   }
@@ -26,6 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+app.get("/u/:id", (req, res) => {
+ const longURL = req.params.id;
+  res.redirect(longURL);
 });
 
 app.get("/urls", (req, res) => {
@@ -47,7 +53,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const tempVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", tempVars);
-})
+});
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
