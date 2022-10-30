@@ -34,7 +34,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body, genRanStr()); // Log the POST request body to the console
+  const id = genRanStr();
+  urlDatabase[id] = req.body.longURL;
+  console.log(urlDatabase); // Log the updated database to the console
   res.send('ok'); // Respond with 'Ok' (we will replace this)
 });
 
