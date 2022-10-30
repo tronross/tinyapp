@@ -53,6 +53,13 @@ app.post("/urls", (req, res) => {
   res.render("urls_show", tempVars);
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  const shortURL = req.params.id;
+  delete urlDatabase[shortURL];
+  const tempVars = { urls: urlDatabase };
+  res.render("urls_index", tempVars);
+});
+
 // render form page to generate new short_URL id and long-URL pair
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
