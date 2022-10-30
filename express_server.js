@@ -4,12 +4,13 @@ const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
 
+// temp test database of urls
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
-
+// FUNCTION: generate random alphanumeric string for short-URL id
 const genRanStr = function() {
   const charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charSetLength = charSet.length;
@@ -23,22 +24,27 @@ const genRanStr = function() {
   return randString;
 };
 
+// buffer parser
 app.use(express.urlencoded({ extended: true }));
 
+// test code holder for root
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+// redirect from short-URL id
 app.get("/u/:id", (req, res) => {
  const longURL = req.params.id;
   res.redirect(longURL);
 });
 
+// render list of id-longURL pairs in table form
 app.get("/urls", (req, res) => {
   const tempVars = { urls: urlDatabase };
   res.render("urls_index", tempVars);
 });
 
+// generate new short_URL id and long-URL pair and add to urlDatabase on POST
 app.post("/urls", (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
@@ -46,10 +52,12 @@ app.post("/urls", (req, res) => {
   res.render("urls_show", tempVars);
 });
 
+// render form page to generate new short_URL id and long-URL pair
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+// render single short_URL id and long-URL pair
 app.get("/urls/:id", (req, res) => {
   const tempVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", tempVars);
@@ -59,10 +67,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
+// launch server and set up event listener
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
