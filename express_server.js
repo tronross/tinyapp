@@ -34,8 +34,8 @@ app.get("/", (req, res) => {
 
 // redirect from short-URL id
 app.get("/u/:id", (req, res) => {
- const shortURL = req.params.id;
- const longURL = urlDatabase[shortURL];
+  const shortURL = req.params.id;
+  const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
 
@@ -53,6 +53,15 @@ app.post("/urls", (req, res) => {
   res.render("urls_show", tempVars);
 });
 
+// edit longURL value in database
+app.post("/urls/:id", (req, res) => {
+  console.log(req.params);
+  const shortURL = req.params.id;
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect("/urls");
+});
+
+// delete short_URL id and long-URL pair from database
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   delete urlDatabase[shortURL];
