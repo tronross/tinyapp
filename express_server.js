@@ -61,7 +61,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
-// delete short_URL id and long-URL pair from database
+// delete short_URL id and long-URL key-value pair from database
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   delete urlDatabase[shortURL];
