@@ -51,11 +51,16 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// assign user login cookie on login POST
+// assign username login cookie on login POST
 app.post("/login", (req, res) => {
   const userName = req.body.username;
-  console.log(userName);
   res.cookie('username', userName);
+  res.redirect("/urls");
+});
+
+// delete username login cookie on logout POST
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
   res.redirect("/urls");
 });
 
@@ -63,7 +68,11 @@ app.post("/login", (req, res) => {
 app.post("/urls", (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
-  const templateVars = { id: id, longURL: urlDatabase[id] };
+  const templateVars = { 
+    id: id, 
+    longURL: urlDatabase[id],
+    username: req.cookies["username"]
+  };
   res.render("urls_show", templateVars);
 });
 
