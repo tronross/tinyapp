@@ -1,8 +1,11 @@
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
+const cookieParser = require('cookie-parser')
 
+const app = express();
+app.use(cookieParser());
 app.set("view engine", "ejs");
+
+const PORT = 8080; // default port 8080
 
 // temp test database of urls
 const urlDatabase = {
@@ -45,6 +48,15 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", tempVars);
 });
 
+// assign user login cookie on login POST
+app.post("/login", (req, res) => {
+  const userName = req.body.username;
+  console.log(userName);
+  res.cookie('username', userName);
+  res.redirect("/urls");
+});
+
+
 // generate new short_URL id and long-URL pair and add to urlDatabase on POST
 app.post("/urls", (req, res) => {
   const id = genRanStr();
@@ -55,7 +67,6 @@ app.post("/urls", (req, res) => {
 
 // edit longURL value in database
 app.post("/urls/:id", (req, res) => {
-  console.log(req.params);
   const shortURL = req.params.id;
   urlDatabase[shortURL] = req.body.longURL;
   res.redirect("/urls");
