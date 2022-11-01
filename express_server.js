@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-// redirect from short-URL id
+// redirect from shortURL id
 app.get("/u/:id", (req, res) => {
   const shortURL = req.params.id;
   const longURL = urlDatabase[shortURL];
@@ -44,8 +44,11 @@ app.get("/u/:id", (req, res) => {
 
 // render list of id-longURL pairs in table form
 app.get("/urls", (req, res) => {
-  const tempVars = { urls: urlDatabase };
-  res.render("urls_index", tempVars);
+  const templateVars = { 
+    username: req.cookies["username"],
+    urls: urlDatabase
+   };
+  res.render("urls_index", templateVars);
 });
 
 // assign user login cookie on login POST
@@ -56,13 +59,12 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-
-// generate new short_URL id and long-URL pair and add to urlDatabase on POST
+// generate new shortURL id and longURL pair and add to urlDatabase on POST
 app.post("/urls", (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
-  const tempVars = { id: id, longURL: urlDatabase[id] };
-  res.render("urls_show", tempVars);
+  const templateVars = { id: id, longURL: urlDatabase[id] };
+  res.render("urls_show", templateVars);
 });
 
 // edit longURL value in database
@@ -72,22 +74,29 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
-// delete short_URL id and long-URL key-value pair from database
+// delete shortURL id and longURL key-value pair from database
 app.post("/urls/:id/delete", (req, res) => {
   const shortURL = req.params.id;
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 });
 
-// render form page to generate new short_URL id and long-URL pair
+// render form page to generate new shortURL id and longURL pair
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { 
+    username: req.cookies["username"],
+    urls: urlDatabase
+   };
+  res.render("urls_new", templateVars);
 });
 
-// render single short_URL id and long-URL pair
+// render page displaying single shortURL id and longURL pair
 app.get("/urls/:id", (req, res) => {
-  const tempVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
-  res.render("urls_show", tempVars);
+  const templateVars = { 
+    username: req.cookies["username"],
+    urls: urlDatabase
+   };
+  res.render("urls_show", templateVars);
 });
 
 app.get("/urls.json", (req, res) => {
