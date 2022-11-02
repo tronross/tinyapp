@@ -64,6 +64,12 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
+// register new user
+app.get("/register", (req, res) => {
+  const templateVars = { username: req.cookies["username"] }
+  res.render("user_register", templateVars);
+});
+
 // generate new shortURL id and longURL pair and add to urlDatabase on POST
 app.post("/urls", (req, res) => {
   const id = genRanStr();
