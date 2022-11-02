@@ -144,6 +144,15 @@ app.get('/urls/:id', (req, res) => {
 // USER MANAGEMENT
 ////////////////////////////////////////////
 
+
+// render form for user login
+app.get('/login', (req, res) => {
+  const user_id = req.cookies['user_id'];
+  const templateVars = { user: users[user_id] }
+  res.render('user_login', templateVars);
+});
+
+
 // assign username login cookie on login POST
 app.post('/login', (req, res) => {
   const userName = req.body.username;
