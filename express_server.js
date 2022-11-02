@@ -29,7 +29,11 @@ const users = {
   }
 };
 
-// FUNCTION: generate random alphanumeric string for short-URL id
+////////////////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////////////////
+
+// generate random alphanumeric string for short-URL id and user_id
 const genRanStr = function() {
   const charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charSetLength = charSet.length;
@@ -41,6 +45,18 @@ const genRanStr = function() {
     randString += randChar;
   }
   return randString;
+};
+
+// check email against emails in users database
+const getUserByEmail = function(regEmail) {
+  for (const user in users) {
+    const userEmail = users[user]['email'];
+    if (userEmail === regEmail) {
+      const validUser = users[user];
+      return validUser;
+    }
+  }
+  return;
 };
 
 
@@ -153,13 +169,23 @@ app.post("/register", (req, res) => {
   const userRandomID = genRanStr();
   const email = req.body.email;
   const password = req.body.password;
-  users[userRandomID] = {
-    id: userRandomID,
-    email,
-    password
-  };
-  res.cookie('user_id', userRandomID);
-  res.redirect("/urls");
+
+  if (email === '' || password === '') {
+    res.status(400).send('Invalid entry');
+  } else {
+    const alreadyRegistered = getUserByEmail(email);
+    if (!alreadyRegistered) {
+      users[userRandomID] = {
+        id: userRandomID,
+        email,
+        password
+      };
+      res.cookie('user_id', userRandomID);
+      res.redirect("/urls");
+    } else {
+    res.status(400).send('Email is already registered');
+    }
+  }
 });
 
 
