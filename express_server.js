@@ -21,7 +21,13 @@ const urlDatabase = {
 };
 
 // users database
-const users = {};
+const users = {
+  aD54il: {
+    id:   "aD54il",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  }
+};
 
 // FUNCTION: generate random alphanumeric string for short-URL id
 const genRanStr = function() {
@@ -57,21 +63,24 @@ app.get("/u/:id", (req, res) => {
 
 // render list of id-longURL pairs in table form
 app.get("/urls", (req, res) => {
+  const user_id = req.cookies['user_id'];
   const templateVars = { 
-    username: req.cookies["username"],
+    user: users[user_id],
     urls: urlDatabase
    };
-  res.render("urls_index", templateVars);
+   res.render("urls_index", templateVars);
+
 });
 
 // generate new shortURL id and longURL pair and add to urlDatabase on POST
 app.post("/urls", (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
+  const user_id = req.cookies['user_id'];
   const templateVars = { 
     id: id, 
     longURL: urlDatabase[id],
-    username: req.cookies["username"]
+    user: users[user_id]
   };
   res.render("urls_show", templateVars);
 });
@@ -92,10 +101,11 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // render form page to generate new shortURL id and longURL pair
 app.get("/urls/new", (req, res) => {
+  const user_id = req.cookies['user_id'];
   const templateVars = { 
-    username: req.cookies["username"],
-    urls: urlDatabase
-   };
+  user: users[user_id],
+  urls: urlDatabase
+  };
   res.render("urls_new", templateVars);
 });
 
@@ -103,8 +113,9 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
   const longURL = urlDatabase[shortURL];
+  const user_id = req.cookies['user_id'];
   const templateVars = { 
-    username: req.cookies["username"],
+    user: users[user_id],
     urls: urlDatabase,
     id: shortURL,
     longURL
@@ -132,7 +143,8 @@ app.post("/logout", (req, res) => {
 
 // render form to register new user
 app.get("/register", (req, res) => {
-  const templateVars = { username: req.cookies["username"] }
+  const user_id = req.cookies['user_id'];
+  const templateVars = { user: users[user_id] }
   res.render("user_register", templateVars);
 });
 
@@ -146,9 +158,7 @@ app.post("/register", (req, res) => {
     email,
     password
   };
-console.log(users);
-
-  res.cookie('userID', userRandomID);
+  res.cookie('user_id', userRandomID);
   res.redirect("/urls");
 });
 
