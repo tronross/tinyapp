@@ -152,8 +152,16 @@ app.get('/login', (req, res) => {
 
 // assign username login cookie on login POST
 app.post('/login', (req, res) => {
-  const userName = req.body.username;
-  res.cookie('username', userName);
+  const loginEmail = req.body.email;
+  const loginPassword = req.body.password;
+  const user = getUserByEmail(loginEmail);
+  console.log(user);
+  
+  
+  
+  // console.log(loginEmail, loginPassword);
+  // const userName = req.body.username;
+  // res.cookie('username', userName);
   res.redirect('/urls');
 });
 
