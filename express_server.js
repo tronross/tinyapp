@@ -1,5 +1,5 @@
 const express = require('express');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(cookieParser());
@@ -59,8 +59,6 @@ const getUserByEmail = function(regEmail) {
   return;
 };
 
-
-
 // test code holder for root
 app.get('/', (req, res) => {
   res.send('Hello!');
@@ -79,12 +77,12 @@ app.get('/u/:id', (req, res) => {
 
 // render list of id-longURL pairs in table form
 app.get('/urls', (req, res) => {
-  const user_id = req.cookies['user_id'];
-  const templateVars = { 
-    user: users[user_id],
+  const userId = req.cookies['user_id'];
+  const templateVars = {
+    user: users[userId],
     urls: urlDatabase
-   };
-   res.render('urls_index', templateVars);
+  };
+  res.render('urls_index', templateVars);
 
 });
 
@@ -92,11 +90,11 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
-  const user_id = req.cookies['user_id'];
-  const templateVars = { 
-    id: id, 
+  const userId = req.cookies['user_id'];
+  const templateVars = {
+    id: id,
     longURL: urlDatabase[id],
-    user: users[user_id]
+    user: users[userId]
   };
   res.render('urls_show', templateVars);
 });
@@ -117,10 +115,10 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // render form page to generate new shortURL id and longURL pair
 app.get('/urls/new', (req, res) => {
-  const user_id = req.cookies['user_id'];
-  const templateVars = { 
-  user: users[user_id],
-  urls: urlDatabase
+  const userId = req.cookies['user_id'];
+  const templateVars = {
+    user: users[userId],
+    urls: urlDatabase
   };
   res.render('urls_new', templateVars);
 });
@@ -129,13 +127,13 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   const longURL = urlDatabase[shortURL];
-  const user_id = req.cookies['user_id'];
-  const templateVars = { 
-    user: users[user_id],
+  const userId = req.cookies['user_id'];
+  const templateVars = {
+    user: users[userId],
     urls: urlDatabase,
     id: shortURL,
     longURL
-   };
+  };
   res.render('urls_show', templateVars);
 });
 
@@ -144,11 +142,10 @@ app.get('/urls/:id', (req, res) => {
 // USER MANAGEMENT
 ////////////////////////////////////////////
 
-
 // render form for user login
 app.get('/login', (req, res) => {
-  const user_id = req.cookies['user_id'];
-  const templateVars = { user: users[user_id] }
+  const userId = req.cookies['user_id'];
+  const templateVars = { user: users[userId] };
   res.render('user_login', templateVars);
 });
 
@@ -168,8 +165,8 @@ app.post('/logout', (req, res) => {
 
 // render form to register new user
 app.get('/register', (req, res) => {
-  const user_id = req.cookies['user_id'];
-  const templateVars = { user: users[user_id] }
+  const userId = req.cookies['user_id'];
+  const templateVars = { user: users[userId] };
   res.render('user_register', templateVars);
 });
 
@@ -192,7 +189,7 @@ app.post('/register', (req, res) => {
       res.cookie('user_id', userRandomID);
       res.redirect('/urls');
     } else {
-    res.status(400).send('Email is already registered');
+      res.status(400).send('Email is already registered');
     }
   }
 });
