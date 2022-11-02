@@ -130,12 +130,27 @@ app.post("/logout", (req, res) => {
   res.redirect("/urls");
 });
 
-// register new user
+// render form to register new user
 app.get("/register", (req, res) => {
   const templateVars = { username: req.cookies["username"] }
   res.render("user_register", templateVars);
 });
 
+// register new user
+app.post("/register", (req, res) => {
+  const userRandomID = genRanStr();
+  const email = req.body.email;
+  const password = req.body.password;
+  users[userRandomID] = {
+    id: userRandomID,
+    email,
+    password
+  };
+console.log(users);
+
+  res.cookie('userID', userRandomID);
+  res.redirect("/urls");
+});
 
 
 app.get("/urls.json", (req, res) => {
