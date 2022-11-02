@@ -150,18 +150,27 @@ app.get('/login', (req, res) => {
 });
 
 
-// assign username login cookie on login POST
+// login user and assign cookie on successful login POST
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
-  const loginPassword = req.body.password;
+  const loginPass = req.body.password;
   const user = getUserByEmail(loginEmail);
-  console.log(user);
+  if (!user) {
+    res.status(403).send('This email is not registered');
+  } else if (user) {
+    const regPass = user.password;
+    if (regPass !== loginPass) {
+      res.status(403).send('Incorrect password');
+    } else if (regPass === loginPass) {
+      res.cookie('user_id', user.id);
+      console.log(user);
+    }
+  }
   
   
-  
+  // console.log(user);
   // console.log(loginEmail, loginPassword);
   // const userName = req.body.username;
-  // res.cookie('username', userName);
   res.redirect('/urls');
 });
 
