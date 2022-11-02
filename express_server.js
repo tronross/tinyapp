@@ -5,13 +5,23 @@ const app = express();
 app.use(cookieParser());
 app.set("view engine", "ejs");
 
+// buffer parser
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = 8080; // default port 8080
+
+////////////////////////////////////////////
+// DATABASES
+////////////////////////////////////////////
 
 // temp test database of urls
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+// users database
+const users = {};
 
 // FUNCTION: generate random alphanumeric string for short-URL id
 const genRanStr = function() {
@@ -27,13 +37,16 @@ const genRanStr = function() {
   return randString;
 };
 
-// buffer parser
-app.use(express.urlencoded({ extended: true }));
+
 
 // test code holder for root
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
+
+////////////////////////////////////////////
+// URL MANAGEMENT
+////////////////////////////////////////////
 
 // redirect from shortURL id
 app.get("/u/:id", (req, res) => {
@@ -49,25 +62,6 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase
    };
   res.render("urls_index", templateVars);
-});
-
-// assign username login cookie on login POST
-app.post("/login", (req, res) => {
-  const userName = req.body.username;
-  res.cookie('username', userName);
-  res.redirect("/urls");
-});
-
-// delete username login cookie on logout POST
-app.post("/logout", (req, res) => {
-  res.clearCookie('username');
-  res.redirect("/urls");
-});
-
-// register new user
-app.get("/register", (req, res) => {
-  const templateVars = { username: req.cookies["username"] }
-  res.render("user_register", templateVars);
 });
 
 // generate new shortURL id and longURL pair and add to urlDatabase on POST
@@ -117,6 +111,32 @@ app.get("/urls/:id", (req, res) => {
    };
   res.render("urls_show", templateVars);
 });
+
+
+////////////////////////////////////////////
+// USER MANAGEMENT
+////////////////////////////////////////////
+
+// assign username login cookie on login POST
+app.post("/login", (req, res) => {
+  const userName = req.body.username;
+  res.cookie('username', userName);
+  res.redirect("/urls");
+});
+
+// delete username login cookie on logout POST
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect("/urls");
+});
+
+// register new user
+app.get("/register", (req, res) => {
+  const templateVars = { username: req.cookies["username"] }
+  res.render("user_register", templateVars);
+});
+
+
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
