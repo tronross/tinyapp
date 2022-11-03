@@ -204,7 +204,7 @@ app.post('/register', (req, res) => {
 // json transmit and app.listen
 ////////////////////////////////////////////
 
-// transmit urlDatabase as json 
+// transmit urlDatabase as json
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
