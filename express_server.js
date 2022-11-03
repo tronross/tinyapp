@@ -21,13 +21,7 @@ const urlDatabase = {
 };
 
 // users database
-const users = {
-  aD54il: {
-    id:   'aD54il',
-    email: 'user2@example.com',
-    password: 'dishwasher-funk',
-  }
-};
+const users = {};
 
 ////////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -59,7 +53,7 @@ const getUserByEmail = function(regEmail) {
   return;
 };
 
-// test code holder for root
+// placeholder for root
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
@@ -86,7 +80,7 @@ app.get('/urls', (req, res) => {
 
 });
 
-// generate new shortURL id and longURL pair and add to urlDatabase on POST
+// generate new shortURL id and longURL pair and add to urlDatabase
 app.post('/urls', (req, res) => {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
@@ -149,8 +143,7 @@ app.get('/login', (req, res) => {
   res.render('user_login', templateVars);
 });
 
-
-// login user and assign cookie on successful login POST
+// login user and assign cookie on successful login
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPass = req.body.password;
@@ -158,7 +151,7 @@ app.post('/login', (req, res) => {
 
   if (!user) {
     res.status(403).send('This email is not associated with an account');
-  } else if (user) {
+  } else {
     if (loginPass !== user.password) {
       res.status(403).send('Incorrect password');
     } else if (loginPass === user.password) {
