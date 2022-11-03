@@ -168,7 +168,7 @@ app.post('/login', (req, res) => {
   }
 });
 
-// delete username login cookie on logout POST
+// delete user_id cookie on logout POST
 app.post('/logout', (req, res) => {
   res.clearCookie('user_id');
   res.redirect('/login');
