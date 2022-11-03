@@ -20,6 +20,7 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
+    <!-- Show login account email and logout button if signed in -->
     <% if(user) { %>
     <h6>Signed in as <%= user.email %></h6>
     <form class="form-inline" action="/logout" method="POST">

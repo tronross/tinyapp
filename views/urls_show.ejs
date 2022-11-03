@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -8,12 +14,14 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
+    
     <title>TinyApp Edit</title>
   </head>
   <body>
     <header>
       <%- include('partials/_header') %>
     </header>
+    <!-- Form for editing the longURL associated with a particular shortURL id-->
     <main style="margin: 2em;">
       <h5>TinyURL for: <%= longURL %></h5>
       <h6>   Short URL ID: <a href="/u/<%= id %>"><%= id %></a></h6>
@@ -29,10 +37,9 @@
           <button type="submit" class="btn btn-primary">edit</button>
         </div>
       </form>
-    
       <h6> Shorten an <a href='/urls/new'>URL</a></h6> 
-    
     </main>
+
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
