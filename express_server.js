@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 // buffer parser
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = 8080; // default port 8080
+const PORT = 8080; // default port
 
 ////////////////////////////////////////////
 // DATABASES
@@ -53,10 +53,13 @@ const getUserByEmail = function(regEmail) {
   return;
 };
 
-// placeholder for root
+////////////////////////////////////////////
+// Placeholder for root
+////////////////////////////////////////////
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
+
 
 ////////////////////////////////////////////
 // URL MANAGEMENT
@@ -77,7 +80,6 @@ app.get('/urls', (req, res) => {
     urls: urlDatabase
   };
   res.render('urls_index', templateVars);
-
 });
 
 // generate new shortURL id and longURL pair and add to urlDatabase
@@ -198,7 +200,11 @@ app.post('/register', (req, res) => {
   }
 });
 
+////////////////////////////////////////////
+// json transmit and app.listen
+////////////////////////////////////////////
 
+// transmit urlDatabase as json 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
