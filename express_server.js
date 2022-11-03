@@ -152,11 +152,11 @@ app.post('/login', (req, res) => {
   if (!user) {
     res.status(403).send('This email is not associated with an account');
   } else {
-    if (loginPass !== user.password) {
-      res.status(403).send('Incorrect password');
-    } else if (loginPass === user.password) {
+    if (loginPass === user.password) {
       res.cookie('user_id', user.id);
       res.redirect('/urls');
+    } else {
+      res.status(403).send('Incorrect password');
     }
   }
 });
