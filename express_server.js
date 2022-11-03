@@ -155,29 +155,23 @@ app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPass = req.body.password;
   const user = getUserByEmail(loginEmail);
+
   if (!user) {
-    res.status(403).send('This email is not registered');
+    res.status(403).send('This email is not associated with an account');
   } else if (user) {
-    const regPass = user.password;
-    if (regPass !== loginPass) {
+    if (loginPass !== user.password) {
       res.status(403).send('Incorrect password');
-    } else if (regPass === loginPass) {
+    } else if (loginPass === user.password) {
       res.cookie('user_id', user.id);
-      console.log(user);
+      res.redirect('/urls');
     }
   }
-  
-  
-  // console.log(user);
-  // console.log(loginEmail, loginPassword);
-  // const userName = req.body.username;
-  res.redirect('/urls');
 });
 
 // delete username login cookie on logout POST
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
-  res.redirect('/urls');
+  res.clearCookie('user_id');
+  res.redirect('/login');
 });
 
 // render form to register new user
