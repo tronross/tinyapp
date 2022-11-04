@@ -146,8 +146,15 @@ app.post('/urls', (req, res) => {
 // edit longURL value in database
 app.post('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
+  
+  if (req.cookies['user_id']) {
   urlDatabase[shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
+} else if (urlDatabase[shortURL]) {
+  res.status(401).send('You are not authorized to access this resource. Please login or register.');
+} else {
+  res.status(404).send('This TinyURL is invalid');
+}
 });
 
 // render page displaying single shortURL id and longURL pair
@@ -174,8 +181,15 @@ app.get('/urls/:id', (req, res) => {
 // delete shortURL id and longURL key-value pair from database
 app.post('/urls/:id/delete', (req, res) => {
   const shortURL = req.params.id;
+  if (req.cookies['user_id']) {
+  // const shortURL = req.params.id;
   delete urlDatabase[shortURL];
   res.redirect('/urls');
+} else if (urlDatabase[shortURL]) {
+  res.status(401).send('You are not authorized to access this resource. Please login or register.');
+} else {
+  res.status(404).send('This TinyURL is invalid');
+}
 });
 
 
