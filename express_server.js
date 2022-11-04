@@ -109,14 +109,18 @@ app.post('/urls/:id/delete', (req, res) => {
   res.redirect('/urls');
 });
 
-// render form page to generate new shortURL id and longURL pair
+// render form page to generate new shortURL id and longURL pair; redirect to login if not logged in
 app.get('/urls/new', (req, res) => {
-  const userId = req.cookies['user_id'];
-  const templateVars = {
+  if (req.cookies['user_id']) {
+    const userId = req.cookies['user_id'];
+    const templateVars = {
     user: users[userId],
     urls: urlDatabase
-  };
-  res.render('urls_new', templateVars);
+    };
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
+  }
 });
 
 // render page displaying single shortURL id and longURL pair
