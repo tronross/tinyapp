@@ -15,10 +15,7 @@ const PORT = 8080; // default port
 ////////////////////////////////////////////
 
 // temp test database of urls
-const urlDatabase = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
-};
+const urlDatabase = {};
 
 // users database
 const users = {};
@@ -69,7 +66,7 @@ app.get('/', (req, res) => {
 app.get('/u/:id', (req, res) => {
   const shortURL = req.params.id;
   if (urlDatabase[shortURL]) {
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
   } else {
     res.status(404).send('This TinyURL is invalid');
@@ -90,7 +87,6 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   if (req.cookies['user_id']) {
     const id = genRanStr();
-
     urlDatabase[id] = {
       longURL:  req.body.longURL,
       userID:   req.cookies['user_id']
@@ -98,8 +94,8 @@ app.post('/urls', (req, res) => {
     console.log(urlDatabase);
     const templateVars = {
       id: id,
-      longURL: urlDatabase[id],
-      user: urlDatabase[id]['userID']
+      longURL: urlDatabase[id].longURL,
+      user: urlDatabase[id].userID
     };
     res.render('urls_show', templateVars);
   } else {
