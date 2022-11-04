@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const PORT = 8080; // default port
 
+
 ////////////////////////////////////////////
 // DATABASES
 ////////////////////////////////////////////
@@ -19,6 +20,7 @@ const urlDatabase = {};
 
 // users database
 const users = {};
+
 
 ////////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -68,6 +70,7 @@ const urlsForUser = function(id) {
 ////////////////////////////////////////////
 // Placeholder for root: redirect to login
 ////////////////////////////////////////////
+
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
@@ -85,6 +88,21 @@ app.get('/u/:id', (req, res) => {
     res.redirect(longURL);
   } else {
     res.status(404).send('This TinyURL is invalid');
+  }
+});
+
+// render form page to generate new shortURL id and longURL pair; redirect to login if not logged in
+app.get('/urls/new', (req, res) => {
+  if (req.cookies['user_id']) {
+    const userID = req.cookies['user_id'];
+    const userURLs = urlsForUser(userID);
+    const templateVars = {
+      user: users[userID],
+      urls: userURLs
+    };
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
   }
 });
 
@@ -134,14 +152,23 @@ app.post('/urls/:id', (req, res) => {
 
 // render page displaying single shortURL id and longURL pair
 app.get('/urls/:id', (req, res) => {
+  if (req.cookies['user_id']) {
   const shortURL = req.params.id;
-  const userId = req.cookies['user_id'];
-  const templateVars = {
-    user: users[userId],
-    urls: urlDatabase,
-    id: shortURL,
+  const userID = req.cookies['user_id'];
+  const userURLs = urlsForUser(userID);
+    
+    if(userURLs[shortURL]) {
+      const templateVars = {
+      user: users[userID],
+      urls: urlDatabase,
+      id: shortURL,
+      longURL: shortURL.longURL
+    };
+    res.render('urls_show', templateVars);
   };
-  res.render('urls_show', templateVars);
+} else {
+  res.status(401).send('You are not authorized to access this resource. Please login or register.');
+}
 });
 
 // delete shortURL id and longURL key-value pair from database
@@ -150,22 +177,6 @@ app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[shortURL];
   res.redirect('/urls');
 });
-
-// render form page to generate new shortURL id and longURL pair; redirect to login if not logged in
-app.get('/urls/new', (req, res) => {
-  if (req.cookies['user_id']) {
-    const userID = req.cookies['user_id'];
-    const templateVars = {
-      user: users[userID],
-      urls: urlDatabase
-    };
-    res.render('urls_new', templateVars);
-  } else {
-    res.redirect('/login');
-  }
-});
-
-
 
 
 ////////////////////////////////////////////
@@ -241,6 +252,7 @@ app.post('/register', (req, res) => {
     }
   }
 });
+
 
 ////////////////////////////////////////////
 // json transmit and app.listen
