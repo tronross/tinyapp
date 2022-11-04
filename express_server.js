@@ -156,13 +156,11 @@ app.get('/urls/new', (req, res) => {
 // render page displaying single shortURL id and longURL pair
 app.get('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
-  const longURL = urlDatabase[shortURL];
   const userId = req.cookies['user_id'];
   const templateVars = {
     user: users[userId],
     urls: urlDatabase,
     id: shortURL,
-    longURL
   };
   res.render('urls_show', templateVars);
 });
