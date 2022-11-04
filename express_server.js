@@ -50,6 +50,25 @@ const getUserByEmail = function(regEmail) {
   return;
 };
 
+// 
+const urlsForUser = function(id){
+  const userURLs = {};
+  for (const shortUrl of urlDatabase) {
+    const longUrl = urlDatabase[shortUrl].longURL;
+    const user = urlDatabase[shortUrl].userID;
+    if (id === user) {
+      userURL = {
+        shortURL: shortUrl,
+        longURL:  longUrl
+      };
+      userURLs.userURL;
+    }
+  }
+  console.log(userURLs);
+  return userURLs;
+}
+
+
 ////////////////////////////////////////////
 // Placeholder for root: redirect to login
 ////////////////////////////////////////////
@@ -73,15 +92,16 @@ app.get('/u/:id', (req, res) => {
   }
 });
 
-// render list of id-longURL pairs in table form
-app.get('/urls', (req, res) => {
-  const userId = req.cookies['user_id'];
-  const templateVars = {
-    user: users[userId],
-    urls: urlDatabase
-  };
-  res.render('urls_index', templateVars);
-});
+// // render list of id-longURL pairs in table form
+// app.get('/urls', (req, res) => {
+//   const userId = req.cookies['user_id'];
+  
+//   const templateVars = {
+//     user: urlDatabase[id].userID,
+//     urls: urlDatabase
+//   };
+//   res.render('urls_index', templateVars);
+// });
 
 // generate new shortURL id and longURL pair and add to urlDatabase if logged in; 401 if not
 app.post('/urls', (req, res) => {
