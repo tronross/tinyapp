@@ -68,8 +68,12 @@ app.get('/', (req, res) => {
 // redirect from shortURL id
 app.get('/u/:id', (req, res) => {
   const shortURL = req.params.id;
+  if (urlDatabase[shortURL]) {
   const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
+  } else {
+    res.status(404).send('This TinyURL is invalid.');
+  }
 });
 
 // render list of id-longURL pairs in table form
@@ -82,7 +86,7 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-// generate new shortURL id and longURL pair and add to urlDatabase
+// generate new shortURL id and longURL pair and add to urlDatabase if logged in; 401 if not
 app.post('/urls', (req, res) => {
   if (req.cookies['user_id']) {
     const id = genRanStr();
