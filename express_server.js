@@ -54,10 +54,10 @@ const getUserByEmail = function(regEmail) {
 };
 
 ////////////////////////////////////////////
-// Placeholder for root
+// Placeholder for root: redirect to login
 ////////////////////////////////////////////
 app.get('/', (req, res) => {
-  res.send('Hello!');
+  res.redirect('/login');
 });
 
 
