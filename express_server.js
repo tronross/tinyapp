@@ -84,6 +84,7 @@ app.get('/urls', (req, res) => {
 
 // generate new shortURL id and longURL pair and add to urlDatabase
 app.post('/urls', (req, res) => {
+  if (req.cookies['user_id']) {
   const id = genRanStr();
   urlDatabase[id] = req.body.longURL;
   const userId = req.cookies['user_id'];
@@ -93,6 +94,9 @@ app.post('/urls', (req, res) => {
     user: users[userId]
   };
   res.render('urls_show', templateVars);
+  } else {
+    res.status(401).send('You are not authorized to access this resource. Please login or register.');
+  }
 });
 
 // edit longURL value in database
