@@ -51,20 +51,16 @@ const getUserByEmail = function(regEmail) {
 };
 
 // 
-const urlsForUser = function(id){
+const urlsForUser = function(id) {
   const userURLs = {};
-  for (const shortUrl of urlDatabase) {
+  for (const shortUrl in urlDatabase) {
     const longUrl = urlDatabase[shortUrl].longURL;
     const user = urlDatabase[shortUrl].userID;
     if (id === user) {
-      userURL = {
-        shortURL: shortUrl,
-        longURL:  longUrl
-      };
-      userURLs.userURL;
+      userURLs[shortUrl] = longUrl;
     }
   }
-  console.log(userURLs);
+  // console.log(userURLs);
   return userURLs;
 }
 
@@ -92,16 +88,21 @@ app.get('/u/:id', (req, res) => {
   }
 });
 
-// // render list of id-longURL pairs in table form
-// app.get('/urls', (req, res) => {
-//   const userId = req.cookies['user_id'];
+// render list of id-longURL pairs in table form
+app.get('/urls', (req, res) => {
+  if (req.cookies['user_id']) {
+  const userID = req.cookies['user_id'];
+  const userURLs = urlsForUser(userID);
   
-//   const templateVars = {
-//     user: urlDatabase[id].userID,
-//     urls: urlDatabase
-//   };
-//   res.render('urls_index', templateVars);
-// });
+  const templateVars = {
+    user: userID,
+    urls: userURLs
+  };
+  res.render('urls_index', templateVars);
+} else {
+  res.status(401).send('You are not authorized to access this resource. Please login or register.');
+}
+});
 
 // generate new shortURL id and longURL pair and add to urlDatabase if logged in; 401 if not
 app.post('/urls', (req, res) => {
