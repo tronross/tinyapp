@@ -128,7 +128,7 @@ app.post('/urls', (req, res) => {
 // edit longURL value in database
 app.post('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
 });
 
