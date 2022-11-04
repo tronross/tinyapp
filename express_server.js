@@ -50,7 +50,7 @@ const getUserByEmail = function(regEmail) {
   return;
 };
 
-// 
+//
 const urlsForUser = function(id) {
   const userURLs = {};
   for (const shortUrl in urlDatabase) {
@@ -62,7 +62,7 @@ const urlsForUser = function(id) {
   }
   // console.log(userURLs);
   return userURLs;
-}
+};
 
 
 ////////////////////////////////////////////
@@ -81,8 +81,8 @@ app.get('/', (req, res) => {
 app.get('/u/:id', (req, res) => {
   const shortURL = req.params.id;
   if (urlDatabase[shortURL]) {
-  const longURL = urlDatabase[shortURL].longURL;
-  res.redirect(longURL);
+    const longURL = urlDatabase[shortURL].longURL;
+    res.redirect(longURL);
   } else {
     res.status(404).send('This TinyURL is invalid');
   }
@@ -91,17 +91,17 @@ app.get('/u/:id', (req, res) => {
 // render list of id-longURL pairs in table form
 app.get('/urls', (req, res) => {
   if (req.cookies['user_id']) {
-  const userID = req.cookies['user_id'];
-  const userURLs = urlsForUser(userID);
+    const userID = req.cookies['user_id'];
+    const userURLs = urlsForUser(userID);
   
-  const templateVars = {
-    user: users[userID],
-    urls: userURLs
-  };
-  res.render('urls_index', templateVars);
-} else {
-  res.status(401).send('You are not authorized to access this resource. Please login or register.');
-}
+    const templateVars = {
+      user: users[userID],
+      urls: userURLs
+    };
+    res.render('urls_index', templateVars);
+  } else {
+    res.status(401).send('You are not authorized to access this resource. Please login or register.');
+  }
 });
 
 // generate new shortURL id and longURL pair and add to urlDatabase if logged in; 401 if not
