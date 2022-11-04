@@ -148,34 +148,34 @@ app.post('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   
   if (req.cookies['user_id']) {
-  urlDatabase[shortURL].longURL = req.body.longURL;
-  res.redirect('/urls');
-} else if (urlDatabase[shortURL]) {
-  res.status(401).send('You are not authorized to access this resource. Please login or register.');
-} else {
-  res.status(404).send('This TinyURL is invalid');
-}
+    urlDatabase[shortURL].longURL = req.body.longURL;
+    res.redirect('/urls');
+  } else if (urlDatabase[shortURL]) {
+    res.status(401).send('You are not authorized to access this resource. Please login or register.');
+  } else {
+    res.status(404).send('This TinyURL is invalid');
+  }
 });
 
 // render page displaying single shortURL id and longURL pair
 app.get('/urls/:id', (req, res) => {
   if (req.cookies['user_id']) {
-  const shortURL = req.params.id;
-  const userID = req.cookies['user_id'];
-  const userURLs = urlsForUser(userID);
+    const shortURL = req.params.id;
+    const userID = req.cookies['user_id'];
+    const userURLs = urlsForUser(userID);
     
-    if(userURLs[shortURL]) {
+    if (userURLs[shortURL]) {
       const templateVars = {
-      user: users[userID],
-      urls: urlDatabase,
-      id: shortURL,
-      longURL: shortURL.longURL
-    };
-    res.render('urls_show', templateVars);
-  };
-} else {
-  res.status(401).send('You are not authorized to access this resource. Please login or register.');
-}
+        user: users[userID],
+        urls: urlDatabase,
+        id: shortURL,
+        longURL: shortURL.longURL
+      };
+      res.render('urls_show', templateVars);
+    }
+  } else {
+    res.status(401).send('You are not authorized to access this resource. Please login or register.');
+  }
 });
 
 // delete shortURL id and longURL key-value pair from database
@@ -183,13 +183,13 @@ app.post('/urls/:id/delete', (req, res) => {
   const shortURL = req.params.id;
   if (req.cookies['user_id']) {
   // const shortURL = req.params.id;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
-} else if (urlDatabase[shortURL]) {
-  res.status(401).send('You are not authorized to access this resource. Please login or register.');
-} else {
-  res.status(404).send('This TinyURL is invalid');
-}
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  } else if (urlDatabase[shortURL]) {
+    res.status(401).send('You are not authorized to access this resource. Please login or register.');
+  } else {
+    res.status(404).send('This TinyURL is invalid');
+  }
 });
 
 
