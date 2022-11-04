@@ -218,7 +218,8 @@ app.post('/login', (req, res) => {
   if (!user) {
     res.status(403).send('This email is not associated with an account');
   } else {
-    if (loginPass === user.password) {
+    const hashPass = user.hashedPassword;
+    if (bcrypt.compareSync(loginPass, hashPass)) {
       res.cookie('user_id', user.id);
       res.redirect('/urls');
     } else {
