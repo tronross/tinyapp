@@ -95,7 +95,7 @@ app.get('/urls', (req, res) => {
   const userURLs = urlsForUser(userID);
   
   const templateVars = {
-    user: userID,
+    user: users[userID],
     urls: userURLs
   };
   res.render('urls_index', templateVars);
@@ -108,15 +108,16 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   if (req.cookies['user_id']) {
     const id = genRanStr();
+    const userID = req.cookies['user_id'];
     urlDatabase[id] = {
       longURL:  req.body.longURL,
-      userID:   req.cookies['user_id']
+      userID
     };
-    console.log(urlDatabase);
+
     const templateVars = {
       id: id,
       longURL: urlDatabase[id].longURL,
-      user: urlDatabase[id].userID
+      user: users[userID]
     };
     res.render('urls_show', templateVars);
   } else {
@@ -141,9 +142,9 @@ app.post('/urls/:id/delete', (req, res) => {
 // render form page to generate new shortURL id and longURL pair; redirect to login if not logged in
 app.get('/urls/new', (req, res) => {
   if (req.cookies['user_id']) {
-    const userId = req.cookies['user_id'];
+    const userID = req.cookies['user_id'];
     const templateVars = {
-      user: users[userId],
+      user: users[userID],
       urls: urlDatabase
     };
     res.render('urls_new', templateVars);
