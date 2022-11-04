@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cookieParser());
@@ -248,6 +249,7 @@ app.post('/register', (req, res) => {
   const userRandomID = genRanStr();
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   if (email === '' || password === '') {
     res.status(400).send('Invalid entry');
@@ -257,7 +259,7 @@ app.post('/register', (req, res) => {
       users[userRandomID] = {
         id: userRandomID,
         email,
-        password
+        hashedPassword
       };
       res.cookie('user_id', userRandomID);
       res.redirect('/urls');
