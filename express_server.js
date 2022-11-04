@@ -85,15 +85,15 @@ app.get('/urls', (req, res) => {
 // generate new shortURL id and longURL pair and add to urlDatabase
 app.post('/urls', (req, res) => {
   if (req.cookies['user_id']) {
-  const id = genRanStr();
-  urlDatabase[id] = req.body.longURL;
-  const userId = req.cookies['user_id'];
-  const templateVars = {
-    id: id,
-    longURL: urlDatabase[id],
-    user: users[userId]
-  };
-  res.render('urls_show', templateVars);
+    const id = genRanStr();
+    urlDatabase[id] = req.body.longURL;
+    const userId = req.cookies['user_id'];
+    const templateVars = {
+      id: id,
+      longURL: urlDatabase[id],
+      user: users[userId]
+    };
+    res.render('urls_show', templateVars);
   } else {
     res.status(401).send('You are not authorized to access this resource. Please login or register.');
   }
@@ -118,8 +118,8 @@ app.get('/urls/new', (req, res) => {
   if (req.cookies['user_id']) {
     const userId = req.cookies['user_id'];
     const templateVars = {
-    user: users[userId],
-    urls: urlDatabase
+      user: users[userId],
+      urls: urlDatabase
     };
     res.render('urls_new', templateVars);
   } else {
@@ -152,8 +152,8 @@ app.get('/login', (req, res) => {
     res.redirect('/urls');
   } else {
     let user;
-    const templateVars = {user}
-  res.render('user_login', templateVars);
+    const templateVars = {user};
+    res.render('user_login', templateVars);
   }
 });
 
@@ -187,8 +187,8 @@ app.get('/register', (req, res) => {
     res.redirect('/urls');
   } else {
     let user;
-    const templateVars = {user}
-  res.render('user_register', templateVars);
+    const templateVars = {user};
+    res.render('user_register', templateVars);
   }
 });
 
