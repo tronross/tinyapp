@@ -132,6 +132,18 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 
+// render page displaying single shortURL id and longURL pair
+app.get('/urls/:id', (req, res) => {
+  const shortURL = req.params.id;
+  const userId = req.cookies['user_id'];
+  const templateVars = {
+    user: users[userId],
+    urls: urlDatabase,
+    id: shortURL,
+  };
+  res.render('urls_show', templateVars);
+});
+
 // delete shortURL id and longURL key-value pair from database
 app.post('/urls/:id/delete', (req, res) => {
   const shortURL = req.params.id;
@@ -153,17 +165,7 @@ app.get('/urls/new', (req, res) => {
   }
 });
 
-// render page displaying single shortURL id and longURL pair
-app.get('/urls/:id', (req, res) => {
-  const shortURL = req.params.id;
-  const userId = req.cookies['user_id'];
-  const templateVars = {
-    user: users[userId],
-    urls: urlDatabase,
-    id: shortURL,
-  };
-  res.render('urls_show', templateVars);
-});
+
 
 
 ////////////////////////////////////////////
