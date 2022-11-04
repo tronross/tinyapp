@@ -138,11 +138,15 @@ app.get('/urls/:id', (req, res) => {
 // USER MANAGEMENT
 ////////////////////////////////////////////
 
-// render form for user login
+// render form for user login; redirect to /urls if already logged in
 app.get('/login', (req, res) => {
-  const userId = req.cookies['user_id'];
-  const templateVars = { user: users[userId] };
+  if (req.cookies['user_id']) {
+    res.redirect('/urls');
+  } else {
+    let user;
+    const templateVars = {user}
   res.render('user_login', templateVars);
+  }
 });
 
 // login user and assign cookie on successful login
@@ -169,11 +173,15 @@ app.post('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// render form to register new user
+// render form to register new user; redirect to /urls if logged in
 app.get('/register', (req, res) => {
-  const userId = req.cookies['user_id'];
-  const templateVars = { user: users[userId] };
+  if (req.cookies['user_id']) {
+    res.redirect('/urls');
+  } else {
+    let user;
+    const templateVars = {user}
   res.render('user_register', templateVars);
+  }
 });
 
 // register new user
