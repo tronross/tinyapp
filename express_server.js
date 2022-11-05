@@ -49,10 +49,10 @@ const genRanStr = function() {
 };
 
 // check email against emails in users database
-const getUserByEmail = function(regEmail) {
-  for (const user in users) {
+const getUserByEmail = function(email, database) {
+  for (const user in database) {
     const userEmail = users[user]['email'];
-    if (userEmail === regEmail) {
+    if (userEmail === email) {
       const validUser = users[user];
       return validUser;
     }
@@ -225,7 +225,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPass = req.body.password;
-  const user = getUserByEmail(loginEmail);
+  const user = getUserByEmail(loginEmail, users);
 
   if (!user) {
     res.status(403).send('This email is not associated with an account');
@@ -267,7 +267,7 @@ app.post('/register', (req, res) => {
   if (email === '' || password === '') {
     res.status(400).send('Invalid entry');
   } else {
-    const alreadyRegistered = getUserByEmail(email);
+    const alreadyRegistered = getUserByEmail(email, users);
     if (!alreadyRegistered) {
       users[userRandomID] = {
         id: userRandomID,
