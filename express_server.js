@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
+const helpers = require('./helpers');
 
 const app = express();
 app.use(cookieSession({
@@ -46,18 +47,6 @@ const genRanStr = function() {
     randString += randChar;
   }
   return randString;
-};
-
-// check email against emails in users database
-const getUserByEmail = function(email, database) {
-  for (const user in database) {
-    const userEmail = users[user]['email'];
-    if (userEmail === email) {
-      const validUser = users[user];
-      return validUser;
-    }
-  }
-  return;
 };
 
 //
@@ -225,7 +214,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPass = req.body.password;
-  const user = getUserByEmail(loginEmail, users);
+  const user = helpers.getUserByEmail(loginEmail, users);
 
   if (!user) {
     res.status(403).send('This email is not associated with an account');
@@ -267,7 +256,7 @@ app.post('/register', (req, res) => {
   if (email === '' || password === '') {
     res.status(400).send('Invalid entry');
   } else {
-    const alreadyRegistered = getUserByEmail(email, users);
+    const alreadyRegistered = helpers.getUserByEmail(email, users);
     if (!alreadyRegistered) {
       users[userRandomID] = {
         id: userRandomID,
