@@ -233,7 +233,7 @@ app.post('/register', (req, res) => {
       req.session.user_id = userRandomID;
       res.redirect('/urls');
     } else {
-      res.status(400).send('Email is already registered');
+      res.status(409).send('Email is already registered');
     }
   }
 });
