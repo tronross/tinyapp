@@ -5,9 +5,9 @@ const bcrypt = require('bcryptjs');
 const app = express();
 app.use(cookieSession({
   name: 'session',
-  keys: [/* secret keys */],
+  keys: [ '8211cc5d-cb17-429f-8ea3-598cb6ab7816',
+          'fe52593c-2e45-4eb9-83f6-3b8515ec6e44' ],
 
-  // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
@@ -70,7 +70,6 @@ const urlsForUser = function(id) {
       userURLs[shortUrl] = longUrl;
     }
   }
-  // console.log(userURLs);
   return userURLs;
 };
 
@@ -101,8 +100,8 @@ app.get('/u/:id', (req, res) => {
 
 // render form page to generate new shortURL id and longURL pair; redirect to login if not logged in
 app.get('/urls/new', (req, res) => {
-  if (req.cookies['user_id']) {
-    const userID = req.cookies['user_id'];
+  if (req.session.user_id) {
+    const userID = req.session.user_id;
     const userURLs = urlsForUser(userID);
     const templateVars = {
       user: users[userID],
@@ -116,10 +115,10 @@ app.get('/urls/new', (req, res) => {
 
 // render list of id-longURL pairs in table form
 app.get('/urls', (req, res) => {
-  if (req.cookies['user_id']) {
-    const userID = req.cookies['user_id'];
+  if (req.session.user_id) {
+    const userID = req.session.user_id;
     const userURLs = urlsForUser(userID);
-  
+    
     const templateVars = {
       user: users[userID],
       urls: userURLs
@@ -132,9 +131,9 @@ app.get('/urls', (req, res) => {
 
 // generate new shortURL id and longURL pair and add to urlDatabase if logged in; 401 if not
 app.post('/urls', (req, res) => {
-  if (req.cookies['user_id']) {
+  if (req.session.user_id) {
     const id = genRanStr();
-    const userID = req.cookies['user_id'];
+    const userID = req.session.user_id;
     urlDatabase[id] = {
       longURL:  req.body.longURL,
       userID
@@ -155,9 +154,15 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   
-  if (req.cookies['user_id']) {
-    urlDatabase[shortURL].longURL = req.body.longURL;
-    res.redirect('/urls');
+  if (req.session.user_id) {
+    // change longURL if valid entry (form value type="url")
+    if (req.body.longURL !== '') {
+      urlDatabase[shortURL].longURL = req.body.longURL;
+      res.redirect('/urls');
+    // redirect to /urls without changing longURL if edit field is blank
+    } else {
+      res.redirect('/urls');
+    }
   } else if (urlDatabase[shortURL]) {
     res.status(401).send('You are not authorized to access this resource. Please login or register.');
   } else {
@@ -167,9 +172,9 @@ app.post('/urls/:id', (req, res) => {
 
 // render page displaying single shortURL id and longURL pair
 app.get('/urls/:id', (req, res) => {
-  if (req.cookies['user_id']) {
+  if (req.session.user_id) {
     const shortURL = req.params.id;
-    const userID = req.cookies['user_id'];
+    const userID = req.session.user_id;
     const userURLs = urlsForUser(userID);
     
     if (userURLs[shortURL]) {
@@ -189,7 +194,7 @@ app.get('/urls/:id', (req, res) => {
 // delete shortURL id and longURL key-value pair from database
 app.post('/urls/:id/delete', (req, res) => {
   const shortURL = req.params.id;
-  if (req.cookies['user_id']) {
+  if (req.session.user_id) {
   // const shortURL = req.params.id;
     delete urlDatabase[shortURL];
     res.redirect('/urls');
@@ -207,11 +212,11 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // render form for user login; redirect to /urls if already logged in
 app.get('/login', (req, res) => {
-  if (req.cookies['user_id']) {
+  if (req.session.user_id) {
     res.redirect('/urls');
   } else {
     let user;
-    const templateVars = {user};
+    const templateVars = { user };
     res.render('user_login', templateVars);
   }
 });
@@ -227,7 +232,7 @@ app.post('/login', (req, res) => {
   } else {
     const hashPass = user.hashedPassword;
     if (bcrypt.compareSync(loginPass, hashPass)) {
-      res.cookie('user_id', user.id);
+      req.session.user_id = user.id;
       res.redirect('/urls');
     } else {
       res.status(403).send('Incorrect password');
@@ -237,13 +242,13 @@ app.post('/login', (req, res) => {
 
 // delete user_id cookie on logout POST
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
+  req.session = null;
   res.redirect('/login');
 });
 
 // render form to register new user; redirect to /urls if logged in
 app.get('/register', (req, res) => {
-  if (req.cookies['user_id']) {
+  if (req.session.user_id) {
     res.redirect('/urls');
   } else {
     let user;
@@ -269,7 +274,8 @@ app.post('/register', (req, res) => {
         email,
         hashedPassword
       };
-      res.cookie('user_id', userRandomID);
+      req.session.user_id = userRandomID;
+      // res.cookie('user_id', userRandomID);
       res.redirect('/urls');
     } else {
       res.status(400).send('Email is already registered');
