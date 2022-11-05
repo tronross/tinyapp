@@ -1,7 +1,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-const helpers = require('./helpers');
+const { getUserByEmail, urlsForUser, genRanStr }  = require('./helpers');
 
 const app = express();
 app.use(cookieSession({
@@ -24,43 +24,11 @@ const PORT = 8080; // default port
 // DATABASES
 ////////////////////////////////////////////
 
-// temp test database of urls
+// urls database
 const urlDatabase = {};
 
 // users database
 const users = {};
-
-
-////////////////////////////////////////////
-// HELPER FUNCTIONS
-////////////////////////////////////////////
-
-// generate random alphanumeric string for short-URL id and user_id
-const genRanStr = function() {
-  const charSet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const charSetLength = charSet.length;
-  let randString = '';
-  
-  for (let i = 0; i < 6; i++) {
-    const randIndex = Math.floor(Math.random() * charSetLength);
-    const randChar = charSet.charAt(randIndex);
-    randString += randChar;
-  }
-  return randString;
-};
-
-//
-const urlsForUser = function(id) {
-  const userURLs = {};
-  for (const shortUrl in urlDatabase) {
-    const longUrl = urlDatabase[shortUrl].longURL;
-    const user = urlDatabase[shortUrl].userID;
-    if (id === user) {
-      userURLs[shortUrl] = longUrl;
-    }
-  }
-  return userURLs;
-};
 
 
 ////////////////////////////////////////////
@@ -91,7 +59,7 @@ app.get('/u/:id', (req, res) => {
 app.get('/urls/new', (req, res) => {
   if (req.session.user_id) {
     const userID = req.session.user_id;
-    const userURLs = urlsForUser(userID);
+    const userURLs = urlsForUser(userID, urlDatabase);
     const templateVars = {
       user: users[userID],
       urls: userURLs
@@ -106,7 +74,7 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls', (req, res) => {
   if (req.session.user_id) {
     const userID = req.session.user_id;
-    const userURLs = urlsForUser(userID);
+    const userURLs = urlsForUser(userID, urlDatabase);
     
     const templateVars = {
       user: users[userID],
@@ -164,7 +132,7 @@ app.get('/urls/:id', (req, res) => {
   if (req.session.user_id) {
     const shortURL = req.params.id;
     const userID = req.session.user_id;
-    const userURLs = urlsForUser(userID);
+    const userURLs = urlsForUser(userID, urlDatabase);
     
     if (userURLs[shortURL]) {
       const templateVars = {
@@ -184,7 +152,6 @@ app.get('/urls/:id', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   const shortURL = req.params.id;
   if (req.session.user_id) {
-  // const shortURL = req.params.id;
     delete urlDatabase[shortURL];
     res.redirect('/urls');
   } else if (urlDatabase[shortURL]) {
@@ -214,7 +181,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPass = req.body.password;
-  const user = helpers.getUserByEmail(loginEmail, users);
+  const user = getUserByEmail(loginEmail, users);
 
   if (!user) {
     res.status(403).send('This email is not associated with an account');
@@ -256,7 +223,7 @@ app.post('/register', (req, res) => {
   if (email === '' || password === '') {
     res.status(400).send('Invalid entry');
   } else {
-    const alreadyRegistered = helpers.getUserByEmail(email, users);
+    const alreadyRegistered = getUserByEmail(email, users);
     if (!alreadyRegistered) {
       users[userRandomID] = {
         id: userRandomID,
@@ -264,7 +231,6 @@ app.post('/register', (req, res) => {
         hashedPassword
       };
       req.session.user_id = userRandomID;
-      // res.cookie('user_id', userRandomID);
       res.redirect('/urls');
     } else {
       res.status(400).send('Email is already registered');
