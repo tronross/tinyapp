@@ -1,5 +1,5 @@
 const express = require('express');
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const { getUserByEmail, urlsForUser, genRanStr }  = require('./helpers');
@@ -17,6 +17,8 @@ app.set('view engine', 'ejs');
 
 // buffer parser
 app.use(express.urlencoded({ extended: true }));
+
+app.use(methodOverride('_method'));
 
 const PORT = 8080; // default port
 
@@ -109,7 +111,7 @@ app.post('/urls', (req, res) => {
 });
 
 // edit longURL value in database
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   
   if (req.session.user_id) {
@@ -150,7 +152,7 @@ app.get('/urls/:id', (req, res) => {
 });
 
 // delete shortURL id and longURL key-value pair from database
-app.post('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id', (req, res) => {
   const shortURL = req.params.id;
   if (req.session.user_id) {
     delete urlDatabase[shortURL];
