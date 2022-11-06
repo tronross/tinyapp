@@ -62,7 +62,7 @@ describe('genRanStr', function() {
   it("should return a six-character random alphanumeric string", function() {
     const ranStr = genRanStr();
     assert.strictEqual(ranStr.length, 6);
-    console.log('Random string: ', ranStr);
+    console.log('    Random string: ', ranStr);
   });
     
 });
