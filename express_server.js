@@ -32,7 +32,7 @@ const users = {};
 
 
 ////////////////////////////////////////////
-// Placeholder for root: redirect to login
+// Redirect to login on root
 ////////////////////////////////////////////
 
 app.get('/', (req, res) => {
@@ -208,7 +208,7 @@ app.get('/register', (req, res) => {
     res.redirect('/urls');
   } else {
     let user;
-    const templateVars = {user};
+    const templateVars = { user };
     res.render('user_register', templateVars);
   }
 });
@@ -233,7 +233,7 @@ app.post('/register', (req, res) => {
       req.session.user_id = userRandomID;
       res.redirect('/urls');
     } else {
-      res.status(409).send('Email is already registered');
+      res.status(400).send('Email is already registered');
     }
   }
 });
