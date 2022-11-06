@@ -32,7 +32,7 @@
         <tbody>
           <% for (let shortId in urls) { %>
             <tr>
-              <td><%= shortId %></td>
+              <td><a href="/u/<%= shortId %>"><%= shortId %></a></td>
               <td><%= urls[shortId] %></td>
               <td><form method="GET" action="/urls/<%=shortId%>/"> <button type="submit" class="btn btn-primary">edit</button></form></td>
               <td><form method="POST" action="/urls/<%=shortId%>/delete"> <button type="submit" class="btn btn-primary">delete</button></form></td>
