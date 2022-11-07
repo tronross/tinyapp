@@ -10,17 +10,16 @@ app.use(cookieSession({
   keys: [ '8211cc5d-cb17-429f-8ea3-598cb6ab7816',
           'fe52593c-2e45-4eb9-83f6-3b8515ec6e44' ],
 
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  maxAge: 24 * 60 * 60 * 1000
 }));
 
 app.set('view engine', 'ejs');
 
-// buffer parser
 app.use(express.urlencoded({ extended: true }));
 
 app.use(methodOverride('_method'));
 
-const PORT = 8080; // default port
+const PORT = 8080;
 
 
 ////////////////////////////////////////////
@@ -78,7 +77,6 @@ app.get('/urls', (req, res) => {
   if (req.session.user_id) {
     const userID = req.session.user_id;
     const userURLs = urlsForUser(userID, urlDatabase);
-    
     const templateVars = {
       user: users[userID],
       urls: userURLs
@@ -243,13 +241,8 @@ app.post('/register', (req, res) => {
 
 
 ////////////////////////////////////////////
-// json transmit and app.listen
+// app.listen
 ////////////////////////////////////////////
-
-// transmit urlDatabase as json
-app.get('/urls.json', (req, res) => {
-  res.json(urlDatabase);
-});
 
 // launch server and set up event listener
 app.listen(PORT, () => {
