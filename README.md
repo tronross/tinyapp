@@ -6,11 +6,11 @@ TinyApp allows for multiple users with their own associated short URL <-> long U
 
 The app maintains databases of individual users and short URL <-> long URL pairs in-memory. Future implementations may allow for database persistence between sessions.
 
-## Final Product
+## Final Product Screenshots
 
 !["TinyApp URLs page"](https://github.com/tronross/tinyapp/blob/master/docs/TinyAppURLs.png?raw=true)
 !["TinyApp edit page"](https://github.com/tronross/tinyapp/blob/master/docs/TinyAppEdit.png?raw=true)
-!["TinyApp user registration page"](https://github.com/tronross/tinyapp/blob/master/docs/TinyAppReg.png?raw=true)
+!["TinyApp user registration page"](https://github.com/tronross/tinyapp/blob/master/docs/TinyAppReg3.png?raw=true)
 
 
 ## Dependencies
