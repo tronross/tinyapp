@@ -7,8 +7,10 @@ const { getUserByEmail, urlsForUser, genRanStr }  = require('./helpers');
 const app = express();
 app.use(cookieSession({
   name: 'session',
-  keys: [ '8211cc5d-cb17-429f-8ea3-598cb6ab7816',
-          'fe52593c-2e45-4eb9-83f6-3b8515ec6e44' ],
+  keys: [
+          '8211cc5d-cb17-429f-8ea3-598cb6ab7816',
+          'fe52593c-2e45-4eb9-83f6-3b8515ec6e44'
+                                                  ],
 
   maxAge: 24 * 60 * 60 * 1000
 }));
@@ -93,12 +95,12 @@ app.post('/urls', (req, res) => {
     const id = genRanStr();
     const userID = req.session.user_id;
     urlDatabase[id] = {
-      longURL:  req.body.longURL,
-      userID
+      userID,
+      longURL:  req.body.longURL
     };
 
     const templateVars = {
-      id: id,
+      id,
       longURL: urlDatabase[id].longURL,
       user: users[userID]
     };
@@ -227,9 +229,9 @@ app.post('/register', (req, res) => {
     const alreadyRegistered = getUserByEmail(email, users);
     if (!alreadyRegistered) {
       users[userRandomID] = {
-        id: userRandomID,
         email,
-        hashedPassword
+        hashedPassword,
+        id: userRandomID
       };
       req.session.user_id = userRandomID;
       res.redirect('/urls');
